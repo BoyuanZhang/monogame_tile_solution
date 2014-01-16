@@ -21,7 +21,17 @@ Goals of this project includes
 	  knowledge on the MonoGame Framework
 
 	- To create a re-usable Tile-Engine and Tile-Editor for the creation and 
-	  enjoyment of Tile-Based MonoGame games.
+	  enjoyment of Tile-Based MonoGame games
+	  
+	  
+Current Roadmaps
 	
-
-Credit to Nick Gravelyn's Tile Engine tutorial for getting this project and I started on Tile-Engines
+	- Implement Tile-object based layer layouts opposed to texture indexing layouts
+	
+	- Implement Tile collision system that can be used by a collision engine
+	
+	- Implement XML property files for the saving and loading of Tile Layer Layouts and their properties
+	
+	- Introduce Partition Tree optimizations for drawing in Game-mode (only draw tiles in the visible partition)
+	
+Credit to Nick Gravelyn's Tile Engine tutorial for getting this project and I started on Tile-Engines!
