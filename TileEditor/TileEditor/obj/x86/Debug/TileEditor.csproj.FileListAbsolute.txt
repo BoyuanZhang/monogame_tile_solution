@@ -1,0 +1,16 @@
+C:\GitRepos\monogame_tileSolution\TileEditor\TileEditor\obj\x86\Debug\TileEditor.Forms.NewTileLayerForm.resources
+C:\GitRepos\monogame_tileSolution\TileEditor\TileEditor\obj\x86\Debug\TileEditor.Properties.Resources.resources
+C:\GitRepos\monogame_tileSolution\TileEditor\TileEditor\obj\x86\Debug\TileEditor.TileEditorForm.resources
+C:\GitRepos\monogame_tileSolution\TileEditor\TileEditor\obj\x86\Debug\TileEditor.csproj.GenerateResource.Cache
+C:\GitRepos\monogame_tileSolution\TileEditor\TileEditor\bin\Debug\TileEditor.exe
+C:\GitRepos\monogame_tileSolution\TileEditor\TileEditor\bin\Debug\TileEditor.pdb
+C:\GitRepos\monogame_tileSolution\TileEditor\TileEditor\bin\Debug\MonoGame.Framework.dll
+C:\GitRepos\monogame_tileSolution\TileEditor\TileEditor\bin\Debug\OpenTK.dll
+C:\GitRepos\monogame_tileSolution\TileEditor\TileEditor\bin\Debug\OpenTK.GLControl.dll
+C:\GitRepos\monogame_tileSolution\TileEditor\TileEditor\bin\Debug\TileEngine.dll
+C:\GitRepos\monogame_tileSolution\TileEditor\TileEditor\bin\Debug\Lidgren.Network.dll
+C:\GitRepos\monogame_tileSolution\TileEditor\TileEditor\bin\Debug\Tao.Sdl.dll
+C:\GitRepos\monogame_tileSolution\TileEditor\TileEditor\bin\Debug\TileEngine.pdb
+C:\GitRepos\monogame_tileSolution\TileEditor\TileEditor\obj\x86\Debug\TileEditor.csprojResolveAssemblyReference.cache
+C:\GitRepos\monogame_tileSolution\TileEditor\TileEditor\obj\x86\Debug\TileEditor.exe
+C:\GitRepos\monogame_tileSolution\TileEditor\TileEditor\obj\x86\Debug\TileEditor.pdb

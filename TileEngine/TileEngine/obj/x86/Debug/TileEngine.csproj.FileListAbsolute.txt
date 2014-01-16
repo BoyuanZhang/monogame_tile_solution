@@ -1,0 +1,9 @@
+C:\GitRepos\monogame_tileSolution\TileEngine\TileEngine\bin\WindowsGL\Debug\TileEngine.dll
+C:\GitRepos\monogame_tileSolution\TileEngine\TileEngine\bin\WindowsGL\Debug\TileEngine.pdb
+C:\GitRepos\monogame_tileSolution\TileEngine\TileEngine\bin\WindowsGL\Debug\Lidgren.Network.dll
+C:\GitRepos\monogame_tileSolution\TileEngine\TileEngine\bin\WindowsGL\Debug\MonoGame.Framework.dll
+C:\GitRepos\monogame_tileSolution\TileEngine\TileEngine\bin\WindowsGL\Debug\OpenTK.dll
+C:\GitRepos\monogame_tileSolution\TileEngine\TileEngine\bin\WindowsGL\Debug\Tao.Sdl.dll
+C:\GitRepos\monogame_tileSolution\TileEngine\TileEngine\obj\x86\Debug\TileEngine.dll
+C:\GitRepos\monogame_tileSolution\TileEngine\TileEngine\obj\x86\Debug\TileEngine.pdb
+C:\GitRepos\monogame_tileSolution\TileEngine\TileEngine\obj\x86\Debug\TileEngine.csprojResolveAssemblyReference.cache
