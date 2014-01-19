@@ -8,7 +8,7 @@ using TileEditor.Utility;
 
 namespace TileEditor.Handlers
 {
-    class TexturePreviewHandler : Handler
+    public class TexturePreviewHandler : Handler
     {
         //dictionary of images, key: trimmed file name, value: image
         Dictionary<string, Image> m_imageDictionary;

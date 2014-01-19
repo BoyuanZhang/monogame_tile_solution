@@ -11,7 +11,7 @@ using TileEditor.Utility;
 
 namespace TileEditor.Handlers
 {
-    class TextureHandler : Handler
+    public class TextureHandler : Handler
     {
         //Graphics device to handle graphical data (textures)
         private GraphicsDevice m_graphicsDevice;
@@ -41,6 +41,7 @@ namespace TileEditor.Handlers
                     return true;
                 }
 
+                //handler already contains this texture!
                 return false;
             }
             catch( Exception e)

@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using TileEngine.Layer;
+using TileEngine.Layer.DataObjects;
 
 namespace TileEditor.Handlers
 {
@@ -40,11 +41,42 @@ namespace TileEditor.Handlers
             return false;
         }
 
-        public bool HandleNewLayer(string layerName, int width, int height)
+        public Tuple< string, List<string> > HandleExistingLayer(string fileName, TextureHandler textureHandler, TexturePreviewHandler texturePreviewHandler)
+        {
+            try
+            {
+                //Make sure file doesn't already exist
+                string trimmedFileName = Utility.FileUtility.GetFileNameWithParentFolder(fileName);
+                if (!m_tileLayerDictionary.ContainsKey(trimmedFileName))
+                {
+                    //Get the tile layer data object
+
+                    EditorTileLayerDO openedTileLayerDO = FileHandling.LayerFileHandler.OpenEditorLayer(fileName, textureHandler, texturePreviewHandler);
+                    if (openedTileLayerDO != null)
+                    {
+                        m_tileLayerDictionary.Add(trimmedFileName, openedTileLayerDO.EditorTileLayer);
+
+                        //we grabbed necessary information from the layer data object, now simply return a layer tuple, that contains the layer name,
+                        //and a list of all the layers texture names
+                        return new Tuple<string, List<string>>(trimmedFileName, openedTileLayerDO.LayerTextureNameList);
+                    }
+                }
+                //if it does exist, or the layer file could not be handled properly just return an empty tuple
+
+                return new Tuple<string, List<string>>(string.Empty, null);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public bool HandleNewLayer(string layerName, int width, int height, int layerType)
         {
             if (!m_tileLayerDictionary.ContainsKey(layerName))
             {
-                m_tileLayerDictionary.Add(layerName, new EditorTileLayer(width, height));
+                //throw layertype as the enum type, so the layer can store the type it is
+                m_tileLayerDictionary.Add(layerName, new EditorTileLayer(width, height, (LayerType.LayerTypesEnum)layerType));
                 return true;
             }
 
@@ -80,6 +112,25 @@ namespace TileEditor.Handlers
             foreach (string key in m_tileLayerDictionary.Keys )
             {
                 m_tileLayerDictionary[key].RemoveTexture(texture);
+            }
+        }
+
+        public void SaveLayer(string contentPath, string saveLayerName, string layerKey, List<string> textureFileNames)
+        {
+            try
+            {
+                if (m_tileLayerDictionary.ContainsKey(layerKey))
+                {
+                    FileHandling.LayerFileHandler.SaveLayer( contentPath, saveLayerName, m_tileLayerDictionary[layerKey], textureFileNames);
+                }
+                else
+                {
+                    //Could not find key.. this should never happen but in case we'll leave this else statement here to handle these scenarios
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
         }
 
@@ -171,8 +222,8 @@ namespace TileEditor.Handlers
             return null;
         }
 
-        //Gets dimensions of current layer, if there is no current layer return empty dimensions (0,0)
-        public KeyValuePair<int, int> GetLayerDimensions( List<string> layerKeys )
+        //Gets dimensions of the largest layer of selected layers, if there is no current layer return empty dimensions (0,0)
+        public Tuple<int, int> GetLayerDimensions( List<string> layerKeys )
         {
             if (layerKeys.Count > 0)
             {
@@ -192,11 +243,11 @@ namespace TileEditor.Handlers
                         }
                     }
 
-                    return new KeyValuePair<int, int>(maxWidth, maxHeight);
+                    return new Tuple<int, int>(maxWidth, maxHeight);
                 }
             }
 
-            return new KeyValuePair<int,int>( 0, 0 );
+            return new Tuple<int,int>( 0, 0 );
         }
 
         public int GetLayerAlpha(string layerKey)
@@ -209,6 +260,21 @@ namespace TileEditor.Handlers
             }
 
             return 100;
+        }
+
+        public string GetLayerTypeAsString(string layerKey)
+        {
+            if (m_tileLayerDictionary.ContainsKey(layerKey))
+            {
+                LayerType.LayerTypesEnum layerType = m_tileLayerDictionary[layerKey].LayerLayoutType;
+
+                //convert it to a string according to the actual layer type to pass back
+                if (layerType == LayerType.LayerTypesEnum.Normal)
+                    return "Normal";
+                else if (layerType == LayerType.LayerTypesEnum.Collision)
+                    return "Collision";
+            }
+            return string.Empty;
         }
 
         //Not sure if this logic belongs in the tile layer handler yet
@@ -267,6 +333,9 @@ namespace TileEditor.Handlers
             if (cellY < m_currentLayer.LayoutHeight - 1)
                 FillCells(cellX, cellY + 1, newCellIndex, oldCellIndex);
         }
+
+        //return the layer file filter
+        public static string TileLayerFileFilter { get { return FileHandling.LayerFileHandler.LayerFileFilter; } }
 
         #endregion
     }
