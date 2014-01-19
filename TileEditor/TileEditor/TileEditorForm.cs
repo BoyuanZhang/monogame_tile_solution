@@ -47,6 +47,9 @@ namespace TileEditor
         private void InitializeView()
         {
             DisableScrollBars();
+
+            //Set draw to layer combo box to be of type drop down list
+            combobox_drawLayer.DropDownStyle = ComboBoxStyle.DropDownList;
         }
 
         private void RegisterEvents()
@@ -184,6 +187,23 @@ namespace TileEditor
                 scrollbar_vDisplay.Visible = false;
                 trackbar_alphaChannel.Value = trackbar_alphaChannel.Maximum;
                 textbox_layerType.Text = string.Empty;
+
+                //Clear the draw to combo box
+                combobox_drawLayer.Items.Clear();
+            }
+        }
+
+        //When selection is changed within the draw layer combo box we set the current selected item to be the current layer
+        //we are drawing to
+        private void combobox_drawLayer_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (combobox_drawLayer.Items.Count > 0)
+            {
+                //Update the current editing layer
+                string layerName = combobox_drawLayer.SelectedItem.ToString();
+                m_dataManager.LayerSelectionChanged(layerName);
+                //Update the layer type text box to the current editing layer
+                textbox_layerType.Text = m_dataManager.GetLayerTypeAsString( layerName );
             }
         }
 
@@ -386,12 +406,26 @@ namespace TileEditor
                 trackbar_alphaChannel.Value = m_dataManager.GetLayerAlpha(listbox_tileLayers.SelectedItem as string);
                 //Set the layer type text of the top most selected layer
                 textbox_layerType.Text = m_dataManager.GetLayerTypeAsString(listbox_tileLayers.SelectedItem as string);
+
+                //Every time, the layer selection has changed, we clear the draw layer combo-box and re-populate it with all selected layers
+                combobox_drawLayer.Items.Clear();
+                foreach (object item in listbox_tileLayers.SelectedItems)
+                {
+                    combobox_drawLayer.Items.Add(item.ToString());
+                }
+
+                //if there are items in the combo box, always set the default selected index to be the first item (Which will be the first item selected in the 
+                //layer listbox
+                if (combobox_drawLayer.Items.Count > 0)
+                    combobox_drawLayer.SelectedIndex = 0;
             }
             else
             {
                 textbox_layerType.Text = string.Empty;
                 DisableScrollBars();
                 trackbar_alphaChannel.Value = trackbar_alphaChannel.Maximum;
+
+                combobox_drawLayer.Items.Clear();
             }
         }
 
