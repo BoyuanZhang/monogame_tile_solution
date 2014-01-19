@@ -6,7 +6,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-using TileEngine.Tiles;
+using TileEngine.Layer.Tiles;
 using TileEngine.Map;
 
 namespace TileEngine.Layer
@@ -19,42 +19,30 @@ namespace TileEngine.Layer
         protected int m_layoutWidth;
         protected int m_layoutHeight;
 
-        //Tile width, and height parameters... however in the future these will probably be moved to the Tile class when tile's become more dynamic
+        //public properties to modify / get the dimensions used for the tiles in all Tile layers
         public static int TileWidth = 64;
         public static int TileHeight = 64;
 
-        protected int[,] m_tileLayerLayout;
         //List of textures used in tile layer layout
         protected List<Texture2D> m_tileTextureList;
-    
+
+        protected LayerType.LayerTypesEnum m_layerType;
+
         protected float m_alphaChannel;
 
-        //rectangle every tile uses in drawing to reduce rectangle data on the heap... G/C would make this unnoticeable, but feels better to manipulate only position
-        //instead of an entire new rectangle every draw
-        protected Rectangle m_tileRectangle;
-
-        public TileLayer(int width, int height)
+        public TileLayer(int width, int height, LayerType.LayerTypesEnum layerType)
         {
-            m_tileLayerLayout = new int[width, height];
             m_tileTextureList = new List<Texture2D>();
             
             m_layoutWidth = width;
             m_layoutHeight = height;
 
-            //Set tile layer layout to be empty
-            for (int x = 0; x < m_layoutWidth; x++)
-                for (int y = 0; y < m_layoutHeight; y++)
-                    SetCellIndex(x, y, EMPTYTILEINDEX);
+            m_layerType = layerType;
 
             m_alphaChannel = 1.0f;
-
-            //initialize tile rectangle, only it's position will be changing in draws, not it's width or height unless tilewidth, or tileheight we changed
-            m_tileRectangle = new Rectangle(0, 0, Tile.TileWidth, Tile.TileHeight);
         }
 
-        public virtual void Draw( SpriteBatch spriteBatch )
-        {
-        }
+        public virtual void Draw(SpriteBatch spriteBatch) { } 
 
         //Add new texture if it is not inside the texture list
         public void AddNewTexture(Texture2D texture)
@@ -105,18 +93,16 @@ namespace TileEngine.Layer
             }
         }
 
-        //Getters of setters of cells within the tile layout. Validation of row, column values should occur before calling this function
-        public void SetCellIndex(int row, int column, int newTextureIndex)
-        {
-            m_tileLayerLayout[row, column] = newTextureIndex;
-        }
-
-        public int GetCellIndex(int row, int column)
-        {
-            return m_tileLayerLayout[row, column];
-        }
+        //Child layers should implement the way their cells are retrieved and set
+        public virtual void SetCellIndex(int row, int column, int newTextureIndex) { }
+        //if the parent get cell is called for whatever reason.. just return an empty index
+        public virtual int GetCellIndex(int row, int column) { return EMPTYTILEINDEX; }
 
         public float Alpha { get { return m_alphaChannel; } set { m_alphaChannel = value; } }
+
+        //Read only properties
+
+        public LayerType.LayerTypesEnum LayerLayoutType { get { return m_layerType; } }
         public int LayoutWidth { get { return m_layoutWidth; } }
         public int LayoutHeight { get { return m_layoutHeight; } }
     }
