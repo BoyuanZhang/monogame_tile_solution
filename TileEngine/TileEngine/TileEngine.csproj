@@ -39,12 +39,20 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Filing\EngineFileHandler.cs" />
+    <Compile Include="Layer\CreationObjects\TileLayerCO.cs" />
+    <Compile Include="Layer\DataObjects\EditorTileLayerDO.cs" />
     <Compile Include="Layer\EditorTileLayer.cs" />
     <Compile Include="Layer\GameTileLayer.cs" />
+    <Compile Include="Layer\LayerType.cs" />
     <Compile Include="Layer\TileLayer.cs" />
+    <Compile Include="Layer\Tiles\EditorTile.cs" />
+    <Compile Include="Layer\Tiles\GameTile.cs" />
     <Compile Include="Map\TileMap.cs" />
+    <Compile Include="Partitioning\QuadPartitionTree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tiles\Tile.cs" />
+    <Compile Include="Layer\Tiles\Tile.cs" />
+    <Compile Include="Utility\RectangleUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -63,9 +71,7 @@
     <Reference Include="System" />
     <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Utility\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Content\TileEditor\tile_outline.png" />
     <Content Include="Content\Tiles\beachSand.png" />

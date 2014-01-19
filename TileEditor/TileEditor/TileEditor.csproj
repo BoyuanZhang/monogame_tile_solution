@@ -57,6 +57,7 @@
     <Compile Include="Controls\GraphicsEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Forms\EngineHelpers\EngineUtility.cs" />
     <Compile Include="Forms\NewTileLayerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -71,6 +72,7 @@
     </Compile>
     <Compile Include="GLControlSource\GraphicsDeviceService.cs" />
     <Compile Include="GLControlSource\ServiceContainer.cs" />
+    <Compile Include="Handlers\FileHandling\LayerFileHandler.cs" />
     <Compile Include="Handlers\Handler.cs" />
     <Compile Include="Handlers\TextureHandler.cs" />
     <Compile Include="Handlers\TexturePreviewHandler.cs" />
@@ -117,6 +119,7 @@
       <Name>TileEngine</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

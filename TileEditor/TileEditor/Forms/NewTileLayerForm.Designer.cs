@@ -36,11 +36,13 @@
             this.textbox_name = new System.Windows.Forms.TextBox();
             this.textbox_width = new System.Windows.Forms.TextBox();
             this.textbox_height = new System.Windows.Forms.TextBox();
+            this.combobox_layerTypes = new System.Windows.Forms.ComboBox();
+            this.label_layerType = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button_ok
             // 
-            this.button_ok.Location = new System.Drawing.Point(152, 136);
+            this.button_ok.Location = new System.Drawing.Point(192, 167);
             this.button_ok.Name = "button_ok";
             this.button_ok.Size = new System.Drawing.Size(82, 23);
             this.button_ok.TabIndex = 3;
@@ -51,7 +53,7 @@
             // button_cancel
             // 
             this.button_cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button_cancel.Location = new System.Drawing.Point(240, 136);
+            this.button_cancel.Location = new System.Drawing.Point(280, 167);
             this.button_cancel.Name = "button_cancel";
             this.button_cancel.Size = new System.Drawing.Size(77, 23);
             this.button_cancel.TabIndex = 4;
@@ -107,6 +109,23 @@
             this.textbox_height.Size = new System.Drawing.Size(100, 20);
             this.textbox_height.TabIndex = 2;
             // 
+            // combobox_layerTypes
+            // 
+            this.combobox_layerTypes.FormattingEnabled = true;
+            this.combobox_layerTypes.Location = new System.Drawing.Point(94, 115);
+            this.combobox_layerTypes.Name = "combobox_layerTypes";
+            this.combobox_layerTypes.Size = new System.Drawing.Size(121, 21);
+            this.combobox_layerTypes.TabIndex = 5;
+            // 
+            // label_layerType
+            // 
+            this.label_layerType.AutoSize = true;
+            this.label_layerType.Location = new System.Drawing.Point(31, 118);
+            this.label_layerType.Name = "label_layerType";
+            this.label_layerType.Size = new System.Drawing.Size(60, 13);
+            this.label_layerType.TabIndex = 6;
+            this.label_layerType.Text = "Layer Type";
+            // 
             // NewTileLayerForm
             // 
             this.AcceptButton = this.button_ok;
@@ -114,6 +133,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.button_cancel;
             this.ClientSize = new System.Drawing.Size(369, 202);
+            this.Controls.Add(this.label_layerType);
+            this.Controls.Add(this.combobox_layerTypes);
             this.Controls.Add(this.textbox_height);
             this.Controls.Add(this.textbox_width);
             this.Controls.Add(this.textbox_name);
@@ -139,5 +160,7 @@
         public System.Windows.Forms.TextBox textbox_name;
         public System.Windows.Forms.TextBox textbox_width;
         public System.Windows.Forms.TextBox textbox_height;
+        private System.Windows.Forms.Label label_layerType;
+        public System.Windows.Forms.ComboBox combobox_layerTypes;
     }
 }

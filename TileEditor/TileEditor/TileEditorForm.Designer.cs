@@ -58,7 +58,10 @@
             this.picturebox_TexturePreview = new System.Windows.Forms.PictureBox();
             this.label_contentRoot = new System.Windows.Forms.Label();
             this.button_addExistingLayer = new System.Windows.Forms.Button();
+            this.textbox_layerType = new System.Windows.Forms.TextBox();
             this.MapGraphicsEditor = new TileEditor.Controls.GraphicsEditor();
+            this.label_layerType = new System.Windows.Forms.Label();
+            this.layerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menustrip_editorMenu.SuspendLayout();
             this.groupBox_EditTools.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackbar_alphaChannel)).BeginInit();
@@ -89,26 +92,30 @@
             // 
             // newToolStripMenuItem
             // 
+            this.newToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.layerToolStripMenuItem});
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.newToolStripMenuItem.Text = "New";
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openToolStripMenuItem.Text = "Open";
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -133,6 +140,7 @@
             // 
             // scrollbar_vDisplay
             // 
+            this.scrollbar_vDisplay.LargeChange = 9;
             this.scrollbar_vDisplay.Location = new System.Drawing.Point(665, 27);
             this.scrollbar_vDisplay.Name = "scrollbar_vDisplay";
             this.scrollbar_vDisplay.Size = new System.Drawing.Size(17, 587);
@@ -159,7 +167,7 @@
             // listbox_textures
             // 
             this.listbox_textures.FormattingEnabled = true;
-            this.listbox_textures.Location = new System.Drawing.Point(685, 195);
+            this.listbox_textures.Location = new System.Drawing.Point(685, 221);
             this.listbox_textures.Name = "listbox_textures";
             this.listbox_textures.Size = new System.Drawing.Size(209, 134);
             this.listbox_textures.TabIndex = 7;
@@ -167,7 +175,7 @@
             // 
             // button_addNewLayer
             // 
-            this.button_addNewLayer.Location = new System.Drawing.Point(900, 111);
+            this.button_addNewLayer.Location = new System.Drawing.Point(898, 111);
             this.button_addNewLayer.Name = "button_addNewLayer";
             this.button_addNewLayer.Size = new System.Drawing.Size(64, 23);
             this.button_addNewLayer.TabIndex = 8;
@@ -177,7 +185,7 @@
             // 
             // button_removeLayer
             // 
-            this.button_removeLayer.Location = new System.Drawing.Point(900, 141);
+            this.button_removeLayer.Location = new System.Drawing.Point(898, 141);
             this.button_removeLayer.Name = "button_removeLayer";
             this.button_removeLayer.Size = new System.Drawing.Size(64, 23);
             this.button_removeLayer.TabIndex = 9;
@@ -187,7 +195,7 @@
             // 
             // button_addTexture
             // 
-            this.button_addTexture.Location = new System.Drawing.Point(900, 195);
+            this.button_addTexture.Location = new System.Drawing.Point(900, 221);
             this.button_addTexture.Name = "button_addTexture";
             this.button_addTexture.Size = new System.Drawing.Size(64, 23);
             this.button_addTexture.TabIndex = 10;
@@ -197,7 +205,7 @@
             // 
             // button_removeTexture
             // 
-            this.button_removeTexture.Location = new System.Drawing.Point(900, 224);
+            this.button_removeTexture.Location = new System.Drawing.Point(900, 250);
             this.button_removeTexture.Name = "button_removeTexture";
             this.button_removeTexture.Size = new System.Drawing.Size(64, 23);
             this.button_removeTexture.TabIndex = 11;
@@ -217,7 +225,7 @@
             // label_textureFiles
             // 
             this.label_textureFiles.AutoSize = true;
-            this.label_textureFiles.Location = new System.Drawing.Point(685, 179);
+            this.label_textureFiles.Location = new System.Drawing.Point(685, 205);
             this.label_textureFiles.Name = "label_textureFiles";
             this.label_textureFiles.Size = new System.Drawing.Size(67, 13);
             this.label_textureFiles.TabIndex = 13;
@@ -293,9 +301,9 @@
             // 
             this.picturebox_TexturePreview.BackColor = System.Drawing.SystemColors.ControlText;
             this.picturebox_TexturePreview.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.picturebox_TexturePreview.Location = new System.Drawing.Point(730, 335);
+            this.picturebox_TexturePreview.Location = new System.Drawing.Point(685, 361);
             this.picturebox_TexturePreview.Name = "picturebox_TexturePreview";
-            this.picturebox_TexturePreview.Size = new System.Drawing.Size(160, 160);
+            this.picturebox_TexturePreview.Size = new System.Drawing.Size(200, 200);
             this.picturebox_TexturePreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picturebox_TexturePreview.TabIndex = 15;
             this.picturebox_TexturePreview.TabStop = false;
@@ -311,12 +319,21 @@
             // 
             // button_addExistingLayer
             // 
-            this.button_addExistingLayer.Location = new System.Drawing.Point(900, 82);
+            this.button_addExistingLayer.Location = new System.Drawing.Point(898, 82);
             this.button_addExistingLayer.Name = "button_addExistingLayer";
             this.button_addExistingLayer.Size = new System.Drawing.Size(77, 23);
             this.button_addExistingLayer.TabIndex = 17;
             this.button_addExistingLayer.Text = "Add Existing";
             this.button_addExistingLayer.UseVisualStyleBackColor = true;
+            this.button_addExistingLayer.Click += new System.EventHandler(this.button_addExistingLayer_Click);
+            // 
+            // textbox_layerType
+            // 
+            this.textbox_layerType.Location = new System.Drawing.Point(758, 170);
+            this.textbox_layerType.Name = "textbox_layerType";
+            this.textbox_layerType.ReadOnly = true;
+            this.textbox_layerType.Size = new System.Drawing.Size(100, 20);
+            this.textbox_layerType.TabIndex = 18;
             // 
             // MapGraphicsEditor
             // 
@@ -329,12 +346,30 @@
             this.MapGraphicsEditor.VSync = false;
             this.MapGraphicsEditor.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MapGraphicsEditor_MouseDown);
             // 
+            // label_layerType
+            // 
+            this.label_layerType.AutoSize = true;
+            this.label_layerType.Location = new System.Drawing.Point(693, 173);
+            this.label_layerType.Name = "label_layerType";
+            this.label_layerType.Size = new System.Drawing.Size(60, 13);
+            this.label_layerType.TabIndex = 19;
+            this.label_layerType.Text = "Layer Type";
+            // 
+            // layerToolStripMenuItem
+            // 
+            this.layerToolStripMenuItem.Name = "layerToolStripMenuItem";
+            this.layerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.layerToolStripMenuItem.Text = "Layer";
+            this.layerToolStripMenuItem.Click += new System.EventHandler(this.layerToolStripMenuItem_Click);
+            // 
             // TileEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.ClientSize = new System.Drawing.Size(987, 727);
+            this.Controls.Add(this.label_layerType);
+            this.Controls.Add(this.textbox_layerType);
             this.Controls.Add(this.button_addExistingLayer);
             this.Controls.Add(this.label_contentRoot);
             this.Controls.Add(this.picturebox_TexturePreview);
@@ -401,6 +436,9 @@
         private System.Windows.Forms.TrackBar trackbar_alphaChannel;
         private System.Windows.Forms.Label label_contentRoot;
         private System.Windows.Forms.Button button_addExistingLayer;
+        private System.Windows.Forms.TextBox textbox_layerType;
+        private System.Windows.Forms.Label label_layerType;
+        private System.Windows.Forms.ToolStripMenuItem layerToolStripMenuItem;
     }
 }
 

@@ -10,7 +10,7 @@ namespace TileEditor.Utility
     {
         public static string GetFileNameWithParentFolder(string fileName)
         {
-            return Directory.GetParent(fileName).Name + "/" + Path.GetFileNameWithoutExtension(fileName);
+            return Directory.GetParent(fileName).Name + "\\" + Path.GetFileNameWithoutExtension(fileName);
         }
     }
 }
