@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 using TileEditor.Handlers;
 using TileEditor.Controls;
+
 using TileEngine.Layer;
 
 namespace TileEditor.Manager
@@ -57,34 +58,37 @@ namespace TileEditor.Manager
                     //Tell the tile engine to draw the layer layout, but also let the engine know the position the screen currently
                     tileLayer.Draw(spriteBatch, m_screenPosition);
 
-                    //Now if tile outlining is checked we draw the tile outline of all empty tile cells 
-                    if (drawTileOutlines)
+                    if (m_dataManager.EditorOutlineTexture != null)
                     {
-                        for (int x = 0; x < tileLayer.LayoutWidth; x++)
+                        //Now if tile outlining is checked we draw the tile outline of all empty tile cells 
+                        if (drawTileOutlines)
                         {
-                            for (int y = 0; y < tileLayer.LayoutHeight; y++)
+                            for (int x = 0; x < tileLayer.LayoutWidth; x++)
                             {
-                                //Is this cell empty?
-                                if (tileLayer.GetCellIndex(x, y) == TileLayer.EMPTYTILEINDEX)
+                                for (int y = 0; y < tileLayer.LayoutHeight; y++)
                                 {
-                                    spriteBatch.Draw(m_dataManager.EditorOutlineTexture,
-                                                        new Rectangle(x * TileLayer.TileWidth - (int)m_screenPosition.X, y * TileLayer.TileHeight - (int)m_screenPosition.Y, 
-                                                                        TileLayer.TileWidth, TileLayer.TileHeight),
-                                                                        Color.White);
+                                    //Is this cell empty?
+                                    if (tileLayer.GetCellIndex(x, y) == TileLayer.EMPTYTILEINDEX)
+                                    {
+                                        spriteBatch.Draw(m_dataManager.EditorOutlineTexture,
+                                                            new Rectangle(x * TileLayer.TileWidth - (int)m_screenPosition.X, y * TileLayer.TileHeight - (int)m_screenPosition.Y,
+                                                                            TileLayer.TileWidth, TileLayer.TileHeight),
+                                                                            Color.White);
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    //Draw the outline of the cell the user is currently hovering over on the current layer, if there is no current layer
-                    //or the mouse is outside the graphics control nothing will be drawn. The tile layer handler handles whether there is a current layer or not
-                    if (tileLayerHandler.CellX != -1 || tileLayerHandler.CellY != -1)
-                    {
-                        spriteBatch.Draw(m_dataManager.EditorOutlineTexture,
-                                            new Rectangle(tileLayerHandler.CellX * TileLayer.TileWidth - (int)m_screenPosition.X,
-                                                            tileLayerHandler.CellY * TileLayer.TileHeight - (int)m_screenPosition.Y,
-                                                            TileLayer.TileWidth, TileLayer.TileHeight),
-                                            Color.Red);
+                        //Draw the outline of the cell the user is currently hovering over on the current layer, if there is no current layer
+                        //or the mouse is outside the graphics control nothing will be drawn. The tile layer handler handles whether there is a current layer or not
+                        if (tileLayerHandler.CellX != -1 || tileLayerHandler.CellY != -1)
+                        {
+                            spriteBatch.Draw(m_dataManager.EditorOutlineTexture,
+                                                new Rectangle(tileLayerHandler.CellX * TileLayer.TileWidth - (int)m_screenPosition.X,
+                                                                tileLayerHandler.CellY * TileLayer.TileHeight - (int)m_screenPosition.Y,
+                                                                TileLayer.TileWidth, TileLayer.TileHeight),
+                                                Color.Red);
+                        }
                     }
                 }
             }

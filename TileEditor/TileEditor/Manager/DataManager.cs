@@ -29,14 +29,32 @@ namespace TileEditor.Manager
             m_texturePreviewHandler = new TexturePreviewHandler();
 
             //initialize any content the data manager will need (textures etc...)
+            InitializeContent( graphicsDevice, contentPath);
+        }
 
+        private void InitializeContent( GraphicsDevice graphicsDevice, string contentPath)
+        {
             //hard-coded in path ending for now... come up with a better solution for finding the outline texture afterwards
-            EditorOutlineTexture = Texture2D.FromStream(graphicsDevice, File.OpenRead( contentPath + "/" + "TileEditor/tile_outline.png"));
+            //Try to get the outlining texture from the content / tileeditor folder.
+            try
+            {
+                EditorOutlineTexture = Texture2D.FromStream(graphicsDevice, File.OpenRead(contentPath + "/" + "TileEditor/tile_outline.png"));
+            }
+            catch (Exception e)
+            {
+                //log error
+                System.Console.WriteLine(e.Message);
+                //Should pass this to a Form message box handler in the future instead of letting the data manager handle it
+                System.Windows.Forms.MessageBox.Show(e.Message + " Tile outlining will not be enabled",
+                                                       "Warning",
+                                                       System.Windows.Forms.MessageBoxButtons.OK,
+                                                       System.Windows.Forms.MessageBoxIcon.Warning);
+            }
         }
 
         //take in parameters as string and attempt to parse them, or put defaults in if input not in correct format
         //return false if layer could not be handled (layer name already exists etc...)
-        public bool HandleNewLayer(string layerName, string layerWidth, string layerHeight)
+        public bool HandleNewLayer(string layerName, string layerWidth, string layerHeight, int layerType)
         {
             //Parse parameters before giving to layer handler
             int width = 0;
@@ -65,7 +83,7 @@ namespace TileEditor.Manager
             }
 
             //If the new layer is correctly added into data management then return true
-            if (m_tileLayerHandler.HandleNewLayer(layerName, width, height))
+            if (m_tileLayerHandler.HandleNewLayer(layerName, width, height, layerType))
                 return true;
 
             return false;
@@ -76,6 +94,72 @@ namespace TileEditor.Manager
             foreach (string name in layerNames)
             {
                 m_tileLayerHandler.RemoveLayer(name);
+            }
+        }
+
+        //Try to open an existing layer
+        //and return a tuple of data, containing the trimmed file name, and list of textures names to be handled that are loaded in with the layer
+        public Tuple<string, List<string>> OpenLayer(string layerFileName)
+        {
+            try
+            {
+                //Tuple returned after all file handling is completed, including texture name trimming
+                Tuple<string, List<string> > layerTuple = m_tileLayerHandler.HandleExistingLayer(layerFileName, m_textureHandler, m_texturePreviewHandler);
+
+                //Only process if the raw tuple contains a valid layer name
+
+                if (!string.IsNullOrEmpty(layerTuple.Item1))
+                {
+                    return new Tuple<string, List<string>>(layerTuple.Item1, layerTuple.Item2);
+                }
+
+                return new Tuple<string, List<string>>(string.Empty, null);
+            }
+            catch (Exception e)
+            {
+                //log error
+                System.Console.WriteLine(e.Message);
+                //Prompt error to user, stating that the layer file could not be opened, and return an empty tuple (empty fileName, null texture name list)
+                return new Tuple<string, List<string>>(string.Empty, null);
+            }
+        }
+
+        //Save current selected layer
+        public void SaveLayer(string contentPath, string saveName, string layerName, List<string> textureFileNames )
+        {
+            try
+            {
+                if( m_tileLayerHandler.ContainsLayer( layerName ) )
+                {
+                    //Get complete texture file list that the layer is using, then get it's corresponding index in the layer's texture list,
+                    //and add them in order into a new texture file list to be passed on to be saved
+                    Dictionary<int, string> sortedLayerTextureMap = new Dictionary<int, string>();
+                    foreach (string textureFile in textureFileNames)
+                    {
+                        if (m_textureHandler.ContainsTexture(textureFile))
+                        {
+                            int index = m_tileLayerHandler.GetLayer(layerName).UsedTextureIndex(m_textureHandler.GetTexture(textureFile));
+                            //if the layer is using this texture, then add it to the sorted layer
+                            if (index >= 0)
+                            {
+                                sortedLayerTextureMap.Add(index, textureFile);
+                            }
+                        }
+                    }
+                    //sweet, now get all textures in the sortedLayerTextureMap into a list, and pass it over to the tile layer handler to save
+                    List<string> usedTextureNameList = new List<string>();
+                    for (int i = 0; i < sortedLayerTextureMap.Count; i++)
+                    {
+                        usedTextureNameList.Add(sortedLayerTextureMap[i]);
+                    }
+                    //Pass complete texture list to the layer handler's save, so that it may check which ones the layer being saved is using
+                    m_tileLayerHandler.SaveLayer(contentPath, saveName, layerName, usedTextureNameList);
+                }
+            }
+            catch (Exception e)
+            {
+                //Log error
+                System.Console.WriteLine(e.Message);
             }
         }
 
@@ -118,7 +202,7 @@ namespace TileEditor.Manager
                     return FileUtility.GetFileNameWithParentFolder(textureFileName);
                 }
                 //If not handled return empty string
-                return "";
+                return string.Empty;
             }
             catch (Exception e)
             {
@@ -127,7 +211,7 @@ namespace TileEditor.Manager
                 //Should probably call client Error / Exception / Warning window class to display a proper message to user
 
                 //return empty string
-                return "";
+                return string.Empty;
             }
         }
 
@@ -166,7 +250,7 @@ namespace TileEditor.Manager
         //Getters of general layer data 
 
         //Get general layer data for the largest selected layer
-        public KeyValuePair<int, int> GetLayerDimensions( List<string> layerNames)
+        public Tuple<int, int> GetLayerDimensions( List<string> layerNames)
         {
             return m_tileLayerHandler.GetLayerDimensions(layerNames);
         }
@@ -176,7 +260,15 @@ namespace TileEditor.Manager
             return m_tileLayerHandler.GetLayerAlpha(layerName);
         }
 
+        public string GetLayerTypeAsString(string layerName)
+        {
+            return m_tileLayerHandler.GetLayerTypeAsString(layerName);
+        }
+
         //Not sure if this is good design, but here we are allowing the data manager to offer up handles to each of it's handlers
         public TileLayerHandler TileLayerDataHandle { get { return m_tileLayerHandler; } }
+
+        //Gets the tile layer file filter retrieved the engine
+        public static string TileLayerFileFilter { get { return TileLayerHandler.TileLayerFileFilter; } }
     }
 }
