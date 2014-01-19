@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-using TileEditor.Handlers;
 using TileEditor.Manager;
 using TileEditor.Forms;
 
@@ -39,8 +38,7 @@ namespace TileEditor
         {
             //Initialize data manager with the graphics device this form uses, so the data manager can give certain handlers
             //the ability to handle graphical data
-            m_dataManager = new DataManager( MapGraphicsEditor.GraphicsDevice, textbox_contentPath.Text );
-
+            m_dataManager = new DataManager(MapGraphicsEditor.GraphicsDevice, textbox_contentPath.Text);
             //use our new datamanager to initialize the graphics manager for the MapGraphicsEditor control
             m_graphicsManager = new GraphicsManager(MapGraphicsEditor, m_dataManager);
         }
@@ -91,16 +89,24 @@ namespace TileEditor
         //Add new layer
         private void button_addNewLayer_Click(object sender, EventArgs e)
         {
-            NewTileLayerForm newTileLayerForm = new NewTileLayerForm();
+            AddNewLayer();
+        }
+        //Add new layer from menu
+        private void layerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddNewLayer();
+        }
 
-            newTileLayerForm.ShowDialog();
-            //If user presses ok process form parameters to create new Tile Layer
-            if (newTileLayerForm.ok_pressed)
-            {
-                // if data manager was able to handle the new layer, add the tile layer name, which will also be the key of the layer to the tile layer list box
-                if (m_dataManager.HandleNewLayer(newTileLayerForm.textbox_name.Text, newTileLayerForm.textbox_width.Text, newTileLayerForm.textbox_height.Text))
-                    listbox_tileLayers.Items.Add(newTileLayerForm.textbox_name.Text);
-            }
+        //Add existing Tile layer
+        private void button_addExistingLayer_Click(object sender, EventArgs e)
+        {
+            AddExistingLayer();
+        }
+
+        //Open existing layer ( same as add existing layer)
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddExistingLayer();
         }
 
         //Remove selected layer(s)
@@ -129,17 +135,21 @@ namespace TileEditor
         {
             openFileBrowserControl.FileName = "";
             //Filter file types that will be allowed
+            openFileBrowserControl.Multiselect = true;
             openFileBrowserControl.Filter = "Image Files (*.png, *.jpg, *.gif)|*.png;*.jpg;*.gif";
             openFileBrowserControl.InitialDirectory = textbox_contentPath.Text;
 
             if (openFileBrowserControl.ShowDialog() == DialogResult.OK)
             {
-                //Call the data manager to handle the texture file.
-                //if successfully handled, the string != empty string, then add the parsed file name into the texture list box
-                string trimmedFilePath = m_dataManager.HandleTexture(openFileBrowserControl.FileName);
+                foreach (string fileName in openFileBrowserControl.FileNames)
+                {
+                    //Call the data manager to handle the texture file.
+                    //if successfully handled, the string != empty string, then add the parsed file name into the texture list box
+                    string trimmedFilePath = m_dataManager.HandleTexture(fileName);
 
-                if (!string.IsNullOrEmpty(trimmedFilePath))
-                    listbox_textures.Items.Add(trimmedFilePath);
+                    if (!string.IsNullOrEmpty(trimmedFilePath))
+                        listbox_textures.Items.Add(trimmedFilePath);
+                }
             }
         }
 
@@ -173,6 +183,7 @@ namespace TileEditor
                 scrollbar_hDisplay.Visible = false;
                 scrollbar_vDisplay.Visible = false;
                 trackbar_alphaChannel.Value = trackbar_alphaChannel.Maximum;
+                textbox_layerType.Text = string.Empty;
             }
         }
 
@@ -241,6 +252,34 @@ namespace TileEditor
             }
         }
 
+        //File events
+
+        //Save layer
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listbox_tileLayers.SelectedItems.Count > 0)
+            {
+                var result = MessageBox.Show("Are you sure you would like to save the layer: " + listbox_tileLayers.SelectedItem.ToString() + "? ",
+                                                "Form saving",
+                                                MessageBoxButtons.YesNoCancel,
+                                                MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    saveFileBrowserControl.FileName = listbox_tileLayers.SelectedItem.ToString();
+                    saveFileBrowserControl.InitialDirectory = textbox_contentPath.Text;
+
+                    saveFileBrowserControl.Filter = DataManager.TileLayerFileFilter;
+                    //Save the top most selected layer
+                    if( saveFileBrowserControl.ShowDialog() == DialogResult.OK )
+                        m_dataManager.SaveLayer(textbox_contentPath.Text,
+                                                saveFileBrowserControl.FileName, 
+                                                listbox_tileLayers.SelectedItem.ToString(), 
+                                                listbox_textures.Items.Cast<string>().ToList());
+                }
+            }
+        }
+
         //Exit menu button selected
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -252,6 +291,49 @@ namespace TileEditor
         //Should probably wrap these helper methods in another class.
         #region HelperMethods
 
+        //Add new layer
+        private void AddNewLayer()
+        {
+            NewTileLayerForm newTileLayerForm = new NewTileLayerForm();
+
+            newTileLayerForm.ShowDialog();
+            //If user presses ok process form parameters to create new Tile Layer
+            if (newTileLayerForm.ok_pressed)
+            {
+                // if data manager was able to handle the new layer, add the tile layer name, which will also be the key of the layer to the tile layer list box
+                if (m_dataManager.HandleNewLayer(newTileLayerForm.textbox_name.Text, newTileLayerForm.textbox_width.Text,
+                                                    newTileLayerForm.textbox_height.Text, newTileLayerForm.combobox_layerTypes.SelectedIndex))
+                    listbox_tileLayers.Items.Add(newTileLayerForm.textbox_name.Text);
+            }
+        }
+
+        //Add an existing layer
+        private void AddExistingLayer()
+        {
+            openFileBrowserControl.Multiselect = false;
+            openFileBrowserControl.Filter = "Layer File|*.layer";
+
+            openFileBrowserControl.InitialDirectory = textbox_contentPath.Text;
+
+            if (openFileBrowserControl.ShowDialog() == DialogResult.OK)
+            {
+                //list of textures retrieved with the layer
+                Tuple< string, List<string> > openedLayerData;
+
+                openedLayerData = m_dataManager.OpenLayer(openFileBrowserControl.FileName);
+
+                if (!string.IsNullOrEmpty(openedLayerData.Item1))
+                {
+                    listbox_tileLayers.Items.Add(openedLayerData.Item1);
+                    //Add texture names into texture list box as well
+                    foreach (string textureName in openedLayerData.Item2)
+                    {
+                        listbox_textures.Items.Add(textureName);
+                    }
+                }
+            }
+        }
+
         private void DisableScrollBars()
         {
             scrollbar_hDisplay.Visible = false;
@@ -262,17 +344,17 @@ namespace TileEditor
         {
             //Get layer dimensions of the largest or current selected layout, if there is no current selected layout then disable scroll bars.
             //Also get and update the alpha channel track bar
-            //KeyValuePair might not be the best way of getting the width / height dimensions... but for now it'll do
-            KeyValuePair<int, int> layoutDimensions = m_dataManager.GetLayerDimensions( listbox_tileLayers.SelectedItems.Cast<string>().ToList());
-            if (layoutDimensions.Key != 0)
+            //Tuple pair might not be the best way of getting the width / height dimensions... but for now it'll do
+            Tuple<int, int> layoutDimensions = m_dataManager.GetLayerDimensions( listbox_tileLayers.SelectedItems.Cast<string>().ToList());
+            if (layoutDimensions.Item1 != 0)
             {
                 scrollbar_vDisplay.Visible = true;
                 scrollbar_hDisplay.Visible = true;
                 scrollbar_hDisplay.Minimum = 0;
                 scrollbar_vDisplay.Minimum = 0;
 
-                scrollbar_hDisplay.Maximum = layoutDimensions.Key;
-                scrollbar_vDisplay.Maximum = layoutDimensions.Value;
+                scrollbar_hDisplay.Maximum = layoutDimensions.Item1;
+                scrollbar_vDisplay.Maximum = layoutDimensions.Item2;
 
                 //If viewable page dimension is greater than the layout dimensions, they make the scroll bar not visible. 
 
@@ -302,9 +384,12 @@ namespace TileEditor
 
                 //Get the alpha channel of the top most selected layer
                 trackbar_alphaChannel.Value = m_dataManager.GetLayerAlpha(listbox_tileLayers.SelectedItem as string);
+                //Set the layer type text of the top most selected layer
+                textbox_layerType.Text = m_dataManager.GetLayerTypeAsString(listbox_tileLayers.SelectedItem as string);
             }
             else
             {
+                textbox_layerType.Text = string.Empty;
                 DisableScrollBars();
                 trackbar_alphaChannel.Value = trackbar_alphaChannel.Maximum;
             }
