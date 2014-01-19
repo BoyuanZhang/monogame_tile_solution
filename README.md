@@ -28,9 +28,6 @@ Current Roadmaps
 	
 	- Implement Drag and Drag feature for Tile Layer list box (for easier control of layer levels)
 	
-	- Introduce a "Draw-To" layer drop down box that will populate depending on selected Tile Layers.
-	  Then when editing, features will be applied to the layer in the "Draw-To" box.
-	
 	- Implement Tile collision system that can be used by a collision engine
 	
 	- Implement XML property files for the saving and loading of Tile Layer Layouts and their properties
