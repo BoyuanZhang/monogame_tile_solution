@@ -112,9 +112,26 @@ namespace TileEditor
             AddExistingLayer();
         }
 
+        //User has selected a layer or changed selection of a layer
+
+        //Note** the OnDraw method will be called before the selection index changed, since the selection index changed
+        //only occurs after the mouse click occurs. So.. the layer will be drawn before the view can update according
+        //to the new layer. This graphical behavior can be changed by calling the selection changed on mouse down events, instead of
+        //mouse click.
+        private void listbox_tileLayers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //if selection is not null, update the current layer to be the top most selected layer
+            //Update the alpha tracker, and the scroll bars accordingly
+            if (listbox_tileLayers.SelectedItem != null)
+                m_dataManager.LayerSelectionChanged(listbox_tileLayers.SelectedItem.ToString());
+            //Call helper function to update view objects when the layer selection changes
+            NewLayerViewUpdate();
+        }
+
         //Remove selected layer(s)
         private void button_removeLayer_Click(object sender, EventArgs e)
         {
+            NewLayerViewUpdate();
             if (listbox_tileLayers.SelectedItems.Count > 0)
             {
                 m_dataManager.RemoveSelectedLayers(listbox_tileLayers.SelectedItems.Cast<string>().ToList() );
@@ -124,12 +141,6 @@ namespace TileEditor
                 {
                     listbox_tileLayers.Items.Remove(listbox_tileLayers.SelectedItem);
                 }
-            }
-
-            if (listbox_tileLayers.SelectedItem == null)
-            {
-                scrollbar_hDisplay.Visible = false;
-                scrollbar_vDisplay.Visible = false;
             }
         }
 
@@ -162,34 +173,6 @@ namespace TileEditor
             if (listbox_textures.SelectedItem != null)
             {
                 picturebox_TexturePreview.Image = m_dataManager.GetPreviewImage(listbox_textures.SelectedItem.ToString());
-            }
-        }
-
-        //User has selected a layer or changed selection of a layer
-
-        //Note** the OnDraw method will be called before the selection index changed, since the selection index changed
-        //only occurs after the mouse click occurs. So.. the layer will be drawn before the view can update according
-        //to the new layer. This graphical behavior can be changed by calling the selection changed on mouse down events, instead of
-        //mouse click.
-        private void listbox_tileLayers_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //if selection is not null, update the current layer to be the top most selected layer
-            //Update the alpha tracker, and the scroll bars accordingly
-            if (listbox_tileLayers.SelectedItem != null)
-            {
-                m_dataManager.LayerSelectionChanged(listbox_tileLayers.SelectedItem.ToString());
-                //Call helper function to update view objects when the layer selection changes
-                NewLayerViewUpdate();
-            }
-            else
-            {
-                scrollbar_hDisplay.Visible = false;
-                scrollbar_vDisplay.Visible = false;
-                trackbar_alphaChannel.Value = trackbar_alphaChannel.Maximum;
-                textbox_layerType.Text = string.Empty;
-
-                //Clear the draw to combo box
-                combobox_drawLayer.Items.Clear();
             }
         }
 
@@ -365,9 +348,9 @@ namespace TileEditor
             //Get layer dimensions of the largest or current selected layout, if there is no current selected layout then disable scroll bars.
             //Also get and update the alpha channel track bar
             //Tuple pair might not be the best way of getting the width / height dimensions... but for now it'll do
-            Tuple<int, int> layoutDimensions = m_dataManager.GetLayerDimensions( listbox_tileLayers.SelectedItems.Cast<string>().ToList());
-            if (layoutDimensions.Item1 != 0)
+            if (listbox_tileLayers.SelectedItems.Count > 0)
             {
+                Tuple<int, int> layoutDimensions = m_dataManager.GetLayerDimensions(listbox_tileLayers.SelectedItems.Cast<string>().ToList());
                 scrollbar_vDisplay.Visible = true;
                 scrollbar_hDisplay.Visible = true;
                 scrollbar_hDisplay.Minimum = 0;

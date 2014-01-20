@@ -165,6 +165,7 @@
             // 
             // listbox_tileLayers
             // 
+            this.listbox_tileLayers.AllowDrop = true;
             this.listbox_tileLayers.FormattingEnabled = true;
             this.listbox_tileLayers.Location = new System.Drawing.Point(685, 82);
             this.listbox_tileLayers.Name = "listbox_tileLayers";
